@@ -1,0 +1,298 @@
+{
+  "name": "Topic 2 - First API Calls (CRUD)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "427b1429-a84c-49c3-8619-3e0ad994568b",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/posts",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "userId",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Custom-Header",
+              "value": "n8n-assessment"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "cd5c0b4a-1fc6-4473-b471-5ce8008f25a5",
+      "name": "GET Posts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://jsonplaceholder.typicode.com/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Custom-Header",
+              "value": "n8n-assessment"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=UTF-8"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"title\": \"My First API Call\",\n  \"body\": \"Created from n8n\",\n  \"userId\": 1\n}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "97309e09-3269-4a3b-8241-fbf42e2ed453",
+      "name": "POST Create Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "https://jsonplaceholder.typicode.com/posts/1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Custom-Header",
+              "value": "n8n-assessment"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=UTF-8"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"id\": 1,\n  \"title\": \"Updated Title (PUT)\",\n  \"body\": \"Full replacement of the resource\",\n  \"userId\": 1\n}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "bd2e96b0-6202-4c33-b58b-45cb91f7bfe0",
+      "name": "PUT Replace Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://jsonplaceholder.typicode.com/posts/1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Custom-Header",
+              "value": "n8n-assessment"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=UTF-8"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"title\": \"Partially Updated Title (PATCH)\"\n}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "7f51c41e-8921-4c46-a879-d6720830e8fb",
+      "name": "PATCH Update Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "https://jsonplaceholder.typicode.com/posts/1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Custom-Header",
+              "value": "n8n-assessment"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "23f3938b-f762-4bb9-812a-28ca7dfebb5d",
+      "name": "DELETE Remove Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const checks = [\n  ['GET Posts', 200],\n  ['POST Create Post', 201],\n  ['PUT Replace Post', 200],\n  ['PATCH Update Post', 200],\n  ['DELETE Remove Post', 200],\n];\n\nreturn checks.map(([name, expected]) => {\n  const r = $(name).first().json;\n  return {\n    json: {\n      node: name,\n      expectedStatus: expected,\n      actualStatus: r.statusCode,\n      passed: r.statusCode === expected,\n      contentType: r.headers ? r.headers['content-type'] : null,\n    },\n  };\n});"
+      },
+      "id": "a24ae9b1-12be-4e6f-9cb7-c933394ad290",
+      "name": "Validate Status Codes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "GET Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Posts": {
+      "main": [
+        [
+          {
+            "node": "POST Create Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST Create Post": {
+      "main": [
+        [
+          {
+            "node": "PUT Replace Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PUT Replace Post": {
+      "main": [
+        [
+          {
+            "node": "PATCH Update Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PATCH Update Post": {
+      "main": [
+        [
+          {
+            "node": "DELETE Remove Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DELETE Remove Post": {
+      "main": [
+        [
+          {
+            "node": "Validate Status Codes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "3d596882-c505-4455-bd6b-4b1650711dad",
+  "meta": {
+    "instanceId": "a03c7678428ef19ededbf912f16f7d5798ec7b9ab4c17f2a2def6a9e791e7215"
+  },
+  "nodeGroups": [],
+  "id": "hHiXwKgAuTBLZx74",
+  "tags": []
+}
